@@ -1,0 +1,45 @@
+import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+import seaborn as sns
+from sklearn import metrics
+import warnings
+warnings.filterwarnings('ignore')
+
+df = pd.read_csv('student_scores - student_scores.csv')
+
+df.head()
+
+plt.scatter(df['Hours'], df['Scores'])
+plt.grid()
+plt.xlabel('Hours')
+plt.ylabel('Scores')
+plt.title('Time vs Scores plot of students')
+
+x = df['Hours']
+y = df['Scores']
+
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x,y, test_size=0.2, random_state=0)
+
+regressor = LinearRegression()
+regressor.fit(x_train.reshape(-1,1), y_train)
+
+y_pred = regressor.predict(x_test.reshape(-1,1))
+y_pred
+
+# Plotting the regression line
+line = regressor.coef_*x+regressor.intercept_
+
+# Plotting for the test data
+plt.scatter(x, y)
+plt.plot(x, line)
+plt.grid()
+plt.xlabel('Hours')
+plt.ylabel('Scores')
+plt.title('Time vs Scores plot of students')
+plt.show()
+
+pm = metrics.mean_absolute_error(y_test, y_pred)
+print('mean abs error is {}'.format(pm))
